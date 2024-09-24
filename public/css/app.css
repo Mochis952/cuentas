@@ -1,0 +1,72 @@
+body{
+    background: #121212;
+}
+.menu{
+    background-color: #1c1c1c !important;
+}
+.menu a{
+    color: white;
+}
+.active{
+    color:#1e90ff !important;
+}
+
+.navbar{
+    --bs-navbar-hover-color:#1e90ff !important;
+}
+.container{
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 15px;
+    margin-top: 30px;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    background-color: #1c1c1c;
+    justify-content: center;
+    justify-items: center;
+}
+.container h1{
+    color:white;
+    text-align: center;
+}
+.groupMainTextInput{
+    position: relative;
+    margin: 25px 0px 10px 0px;
+}
+.groupMainTextInput label{
+    color: white;
+}
+.groupMainTextInput input{
+    font-size: 14px;
+    padding: 4px 5px 4px 3px;
+    display: block;
+    width: 100%;
+    border: 2px solid #ced4da;
+    color: #333;
+    background: 2px solid #ced4da;
+}
+.groupMainTextInput select{
+    font-size: 14px;
+    padding: 4px 5px 4px 3px;
+    display: block;
+    width: 100%;
+    border: 2px solid #ced4da;
+    color: #333;
+    background: 2px solid #ced4da;
+}
+.groupMainTextInput button{
+    font-size: 14px;
+    padding: 4px 5px 4px 3px;
+    display: block;
+    width: 100%;
+    border: 2px solid #ced4da;
+    color: #333;
+    background: 2px solid #ced4da;
+    border-radius: 10px;
+}
+.error{
+    color: red;
+}
