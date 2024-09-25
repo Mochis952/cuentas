@@ -70,3 +70,32 @@ body{
 .error{
     color: red;
 }
+.success {
+    background: #1e90ff;
+    border: none !important;
+    color: white !important;
+}
+.custom-toast-success {
+    background-color: #28a745; 
+    color: white; 
+}
+
+.custom-toast-error {
+    background-color: #dc3545; 
+    color: white;
+}
+.copy-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    fill: #333; /* Color del icono */
+}
+
+.copy-icon:hover {
+    fill: #007bff; /* Color del icono al pasar el cursor */
+}
+.container_text{
+    background: antiquewhite;
+    border-radius: 10px;
+    text-align: center;
+}
