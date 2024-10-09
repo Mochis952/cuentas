@@ -20,6 +20,4 @@ Route::get('/registar', function () {
     return view('register');
 })->name('register');
 route::post('/add_customer', 'App\Http\Controllers\CustomerController@add_customer')->name('add_customer');
-Route::get('/pruebita',function(){
-    return "Holiwis";
-});
+
