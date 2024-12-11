@@ -28,6 +28,10 @@ class CustomerController extends Controller
         log::info($request);
         $response_store_customer = $this->store($request);
         log::info($response_store_customer);
+        log::info($a);
         return "success";
+    }
+    public function accounts(){
+
     }
 }
