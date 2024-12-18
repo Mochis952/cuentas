@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap-utilities.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <title>@yield('title', 'Master')</title> 
-    
+    <title>@yield('title', 'Master')</title>
+
 
     @stack('styles')
 </head>
 <body>
-    <nav class="row navbar navbar-expand-lg bg-light menu"> 
+    <nav class="row navbar navbar-expand-lg bg-light menu">
         <div class="logo col-3">
             <!-- <img src="{{ asset('img/logo.png') }}" alt="logo" style="width:100%"> -->
         </div>
@@ -23,7 +23,7 @@
                     <a href="{{ route ('register')}}" class="nav-link active">Registar clientes</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route ('laravel')}}" class="nav-link">Cuentas</a>
+                    {{-- <a href="{{ route ('account_streaming')}}" class="nav-link">Cuentas</a> --}}
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">Pagos</a>
@@ -34,10 +34,10 @@
 
     <div class="master">
         @yield('content')
-    </div> 
+    </div>
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @stack('scripts')
 </body>
 </html>

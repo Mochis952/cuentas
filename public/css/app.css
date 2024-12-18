@@ -76,12 +76,12 @@ body{
     color: white !important;
 }
 .custom-toast-success {
-    background-color: #28a745; 
-    color: white; 
+    background-color: #28a745;
+    color: white;
 }
 
 .custom-toast-error {
-    background-color: #dc3545; 
+    background-color: #dc3545;
     color: white;
 }
 .copy-icon {
@@ -99,3 +99,31 @@ body{
     border-radius: 10px;
     text-align: center;
 }
+.table-purple {
+    --bs-table-color: #000 !important; /* Texto negro */
+    --bs-table-bg: #d9c2f0 !important; /* Fondo morado claro */
+    --bs-table-border-color: #bba8d6 !important; /* Borde morado */
+    --bs-table-striped-bg: #cbb3e8 !important; /* Fondo para filas rayadas */
+    --bs-table-striped-color: #000 !important; /* Texto negro en filas rayadas */
+    --bs-table-active-bg: #b99dd6 !important; /* Fondo para filas activas */
+    --bs-table-active-color: #000 !important; /* Texto negro en filas activas */
+    --bs-table-hover-bg: #c1a6e0 !important; /* Fondo para filas al pasar el ratón */
+    --bs-table-hover-color: #000 !important; /* Texto negro al pasar el ratón */
+    color: var(--bs-table-color) !important; /* Aplica el texto negro */
+    border-color: var(--bs-table-border-color) !important; /* Aplica el borde morado */
+}
+.table-orange {
+    --bs-table-color: #000 !important; /* Texto negro */
+    --bs-table-bg: #ffd966 !important; /* Fondo naranja claro */
+    --bs-table-border-color: #e6b800 !important; /* Borde naranja oscuro */
+    --bs-table-striped-bg: #ffcc33 !important; /* Fondo para filas rayadas */
+    --bs-table-striped-color: #000 !important; /* Texto negro en filas rayadas */
+    --bs-table-active-bg: #e6b800 !important; /* Fondo para filas activas */
+    --bs-table-active-color: #000 !important; /* Texto negro en filas activas */
+    --bs-table-hover-bg: #ffdb4d !important; /* Fondo para filas al pasar el ratón */
+    --bs-table-hover-color: #000 !important; /* Texto negro al pasar el ratón */
+    color: var(--bs-table-color) !important; /* Aplica el texto negro */
+    border-color: var(--bs-table-border-color) !important; /* Aplica el borde naranja */
+}
+
+

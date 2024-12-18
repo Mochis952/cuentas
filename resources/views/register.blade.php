@@ -134,7 +134,7 @@
                 customer_name: $("#customer_name").val(),
                 customer_phone_number: $("#customer_phone_number").val(),
                 account_streaming: $("#account_streaming").val(),
-                contact_medium: $("#contact_medium").val()
+                contact_method: $("#contact_medium").val()
             };
             $.ajaxSetup({
                 headers: {

@@ -18,7 +18,7 @@ class CustomerController extends Controller
         $customer = new Customer();
         $customer->name = $validatedData['customer_name'];
         $customer->phone_number = $validatedData['customer_phone_number'];
-        $customer->email = $request->input('email', null);
+        $customer->contact_method = $request->input('contact_method');
         $customer->save();
 
         return 'success Cliente registrado exitosamente.';
@@ -28,10 +28,6 @@ class CustomerController extends Controller
         log::info($request);
         $response_store_customer = $this->store($request);
         log::info($response_store_customer);
-        log::info($a);
         return "success";
-    }
-    public function accounts(){
-
     }
 }
