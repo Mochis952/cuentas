@@ -36,6 +36,21 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="groupMainTextInput">
+                    <label>Correo</label>
+                    <input type="email" id="email" name="email">
+                </div>
+            </div>
+        </div><div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="groupMainTextInput">
+                    <label>Contaseña</label>
+                    <input type="password" id="password" name="password">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="groupMainTextInput">
                     <label>Precio</label>
                     <input type="text" id="prices" name="prices">
                 </div>

@@ -11,22 +11,18 @@
         <div class="col-12 col-md-6 col-lg-6">
             <h1>Cuentas disponibles</h1>
         </div>
+
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">Tipo de cuenta</th>
-                    <th scope="col">Precio</th>
                     <th scope="col">Correo</th>
-                    <th scope="col">Plan contratado</th>
-                    <th scope="col">Metodo de pago</th>
-                    <th scope="col">Fecha de pago</th>
                     <th scope="col">Usuarios activos</th>
                     <th scope="col">Usuarios maximos</th>
                     <th scope="col">Status</th>
                 </tr>
             </thead>
             <tbody id="tbody_account_streaming">
-
             </tbody>
         </table>
     </div>
@@ -60,16 +56,32 @@
                     let account_streaming = `
                         <tr class="${color_tr[element.name_service]}">
                             <th scope="row">${element.name_service}</th>
-                            <td>correo</td>
-                            <td>${element.prices}</td>
-                            <td>${element.type_account}</td>
-                            <td>${element.type_payment}</td>
-                            <td>${element.date_payment}</td>
-                            <td>${element.name_service}</td>
+                            <td>${element.email}</td>
+                            <td></td>
                             <td>${element.user_max}</td>
                             <td>${element.status}</td>
-                        </tr>`
-                console.log(account_streaming)
+                        </tr>
+                         <tr class="d-none">
+                            <td colspan="5">
+                                <div class="description-container col-5">
+                                    <p><strong>Datos de la cuenta:</strong></p>
+                                    <p>Correo: ${element.email}</p>
+                                    <p>Contraseña: ${element.password}</p>
+                                    <p>Precio: ${element.prices}</p>
+                                    <p>Tipo de cuenta: ${element.type_account}</p>
+                                    <p>Metodo de pago: ${element.type_payment}</p>
+                                    <p>Banco: ${element.bank_name}</p>
+                                    <p>Num Tarjeta: ${element.card_number}</p>
+                                    <p>Cuenta que paga: ${element.account_pays}</p>
+                                    <p>Fecha de pago: ${element.date_payment}</p>
+                                </div>
+                                <div class="description-container col-2">
+                                    <p><strong>Cliente datos</strong></p>
+                                </div>
+                            </td>
+                        </tr>
+                        `;
+
                 $('#tbody_account_streaming').append(account_streaming);
                 });
             },

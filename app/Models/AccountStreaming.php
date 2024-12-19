@@ -22,7 +22,9 @@ class AccountStreaming extends Model
         'date_expire',
         'status',
         'account_pays',
-        'user_max'
+        'user_max',
+        'email',
+        'password'
     ];
     public function customerAccounts()
     {

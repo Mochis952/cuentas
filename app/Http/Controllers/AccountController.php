@@ -17,7 +17,9 @@ class AccountController extends Controller
             "prices" => "required|max:255",
             "type_payment" => "required|string|max:255",
             "user_max" => "required|string|max:255",
-            "date_create" => "required|max:255"
+            "date_create" => "required|max:255",
+            "email" => "required|string|max:255",
+            "password" => "required|string|max:255"
         ]);
         $type_account = null;
         if($request->user_max == 1){
