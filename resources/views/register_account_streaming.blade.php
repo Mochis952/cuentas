@@ -151,6 +151,12 @@
                     required: true,
                     minlength: 2
                 },
+                email: {
+                    required: true,
+                },
+                password: {
+                    required: true,
+                },
                 date_create: {
                     required: true,
                 },
@@ -165,12 +171,27 @@
                 },
                 user_max: {
                     required: true,
+                },
+                card_number: {
+                    required: false,
+                },
+                bank_name: {
+                    required: false,
+                },
+                account_pays :{
+                    required: false,
                 }
 
             },
             messages: {
                 prices: {
                     required: "Por favor, agrega un precio.",
+                },
+                email: {
+                    required: "Por favor, agrega un email",
+                },
+                password: {
+                    required: "Por favor, agrega una constraseña",
                 },
                 date_create: {
                     required: "Por favor, agrega la fecha de creacion.",
