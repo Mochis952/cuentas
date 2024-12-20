@@ -7,11 +7,10 @@
 @endpush
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <div id="list_container" class="row container quote-box ">
+    <div id="list_container" class="row container quote-box table-responsive">
         <div class="col-12 col-md-6 col-lg-6">
             <h1>Cuentas disponibles</h1>
         </div>
-
         <table class="table">
             <thead>
                 <tr>
@@ -54,15 +53,15 @@
                         "Youtube": "table-orange"
                     }
                     let account_streaming = `
-                        <tr class="${color_tr[element.name_service]}">
+                        <tr class="${color_tr[element.name_service]}" style="cursor:pointer;" onclick="show_hide_data_acount(${element.id})" >
                             <th scope="row">${element.name_service}</th>
                             <td>${element.email}</td>
                             <td></td>
                             <td>${element.user_max}</td>
                             <td>${element.status}</td>
                         </tr>
-                         <tr class="d-none">
-                            <td colspan="5">
+                        <tr id="data_account_${element.id}"class="${color_tr[element.name_service]} d-none">
+                            <td colspan="2">
                                 <div class="description-container col-5">
                                     <p><strong>Datos de la cuenta:</strong></p>
                                     <p>Correo: ${element.email}</p>
@@ -75,6 +74,8 @@
                                     <p>Cuenta que paga: ${element.account_pays}</p>
                                     <p>Fecha de pago: ${element.date_payment}</p>
                                 </div>
+                            </td>
+                            <td colspan="3">
                                 <div class="description-container col-2">
                                     <p><strong>Cliente datos</strong></p>
                                 </div>
@@ -98,6 +99,13 @@
 
             }
         });
+    }
+    function show_hide_data_acount(element){
+        if ($('#data_account_' + element).hasClass('d-none')) {
+            $('#data_account_'+element).removeClass('d-none');
+        } else {
+            $('#data_account_'+element).addClass('d-none');
+        }
     }
 </script>
 @endpush
