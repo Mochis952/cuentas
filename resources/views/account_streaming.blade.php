@@ -69,9 +69,9 @@
                                     <p>Precio: ${element.prices}</p>
                                     <p>Tipo de cuenta: ${element.type_account}</p>
                                     <p>Metodo de pago: ${element.type_payment}</p>
-                                    <p>Banco: ${element.bank_name}</p>
-                                    <p>Num Tarjeta: ${element.card_number}</p>
-                                    <p>Cuenta que paga: ${element.account_pays}</p>
+                                    ${element.bank_name ? `<p>Banco: ${element.bank_name}</p>` : ''}
+                                    ${element.card_number ? `<p>Num Tarjeta: ${element.card_number}</p>` : ''}
+                                    ${element.account_pays ? `<p>Cuenta que paga: ${element.account_pays}</p>` : ''}
                                     <p>Fecha de pago: ${element.date_payment}</p>
                                 </div>
                             </td>

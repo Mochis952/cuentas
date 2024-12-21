@@ -19,7 +19,11 @@ class AccountController extends Controller
             "user_max" => "required|string|max:255",
             "date_create" => "required|max:255",
             "email" => "required|string|max:255",
-            "password" => "required|string|max:255"
+            "password" => "required|string|max:255",
+            "card_number" => "",
+            "bank_name" => "",
+            "account_pays"=> ""
+
         ]);
         $type_account = null;
         if($request->user_max == 1){
