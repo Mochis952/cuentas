@@ -7,24 +7,34 @@
 @endpush
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <div id="list_container" class="row container quote-box table-responsive">
-        <div class="col-12 col-md-6 col-lg-6">
-            <h1>Cuentas disponibles</h1>
+    <div id="list_container" class="container-fluid quote-box">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>Cuentas disponibles</h1>
+            </div>
         </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Tipo de cuenta</th>
-                    <th scope="col">Correo</th>
-                    <th scope="col">Usuarios activos</th>
-                    <th scope="col">Usuarios maximos</th>
-                    <th scope="col">Status</th>
-                </tr>
-            </thead>
-            <tbody id="tbody_account_streaming">
-            </tbody>
-        </table>
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="table-container">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 30%">Cuenta</th>
+                                <th scope="col">Correo</th>
+                                <th scope="col" style="width: 11%">🧑</th>
+                                <th scope="col" style="width: 12%">Max</th>
+                                <th scope="col" style="width: 9%">⚡</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody_account_streaming">
+                            <!-- Filas generadas dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+
 @endsection
 @push('scripts')
 <script>
@@ -58,24 +68,24 @@
                             <td>${element.email}</td>
                             <td></td>
                             <td>${element.user_max}</td>
-                            <td>${element.status}</td>
-                        </tr>
+                            <td>${element.status == "active" ? '🟢' : '🔴'}</td>
+                            </tr>
                         <tr id="data_account_${element.id}"class="${color_tr[element.name_service]} d-none">
-                            <td colspan="2">
+                            <td colspan="1">
                                 <div class="description-container col-5">
                                     <p><strong>Datos de la cuenta:</strong></p>
-                                    <p>Correo: ${element.email}</p>
-                                    <p>Contraseña: ${element.password}</p>
-                                    <p>Precio: ${element.prices}</p>
-                                    <p>Tipo de cuenta: ${element.type_account}</p>
-                                    <p>Metodo de pago: ${element.type_payment}</p>
+                                    <p>Correo:<br>${element.email}</p>
+                                    <p>Contraseña:<br>${element.password}</p>
+                                    <p>Precio:${element.prices}</p>
+                                    <p>Tipo de cuenta:<br>${element.type_account}</p>
+                                    <p>Metodo de pago:<br>${element.type_payment}</p>
                                     ${element.bank_name ? `<p>Banco: ${element.bank_name}</p>` : ''}
                                     ${element.card_number ? `<p>Num Tarjeta: ${element.card_number}</p>` : ''}
-                                    ${element.account_pays ? `<p>Cuenta que paga: ${element.account_pays}</p>` : ''}
-                                    <p>Fecha de pago: ${element.date_payment}</p>
+                                    ${element.account_pays ? `<p>Cuenta que paga:<br>${element.account_pays}</p>` : ''}
+                                    <p>Fecha de pago:<br>${element.date_payment}</p>
                                 </div>
                             </td>
-                            <td colspan="3">
+                            <td colspan="4">
                                 <div class="description-container col-2">
                                     <p><strong>Cliente datos</strong></p>
                                 </div>
