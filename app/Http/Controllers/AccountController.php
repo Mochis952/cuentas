@@ -38,7 +38,7 @@ class AccountController extends Controller
             $AccountStreaming = AccountStreaming::create($data_validate);
             return response()->json([
                 'success' => true,
-                'message' => 'Cliente creado exitosamente.',
+                'message' => 'Cuenta creada exitosamente.',
                 'data' => $AccountStreaming,
             ], 200);
 

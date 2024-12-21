@@ -8,12 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class CustomerAccount extends Model
 {
     use HasFactory;
+    protected $table = 'customers_account';
+
     protected $fillable = [
         'customers_id',
         'account_id',
         'profile',
         'date_acquisition',
         'status',
+        'date_expiration'
     ];
 
     public function customer()

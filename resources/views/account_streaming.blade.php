@@ -27,7 +27,6 @@
                             </tr>
                         </thead>
                         <tbody id="tbody_account_streaming">
-                            <!-- Filas generadas dinámicamente -->
                         </tbody>
                     </table>
                 </div>
@@ -86,7 +85,7 @@
                                 </div>
                             </td>
                             <td colspan="4">
-                                <div class="description-container col-2">
+                                <div class="description-container col-12">
                                     <p><strong>Cliente datos</strong></p>
                                 </div>
                             </td>

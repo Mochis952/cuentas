@@ -113,7 +113,7 @@
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="groupMainTextInput">
                     <label>Usuarios maximos por cuenta </label>
-                    <input type="text" id="user_max" name="user_max" value="4">
+                    <input type="number" id="user_max" name="user_max" value="4">
                 </div>
             </div>
         </div>

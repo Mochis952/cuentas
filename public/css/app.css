@@ -125,12 +125,6 @@ body{
     color: var(--bs-table-color) !important; /* Aplica el texto negro */
     border-color: var(--bs-table-border-color) !important; /* Aplica el borde naranja */
 }
-/* Contenedor que ajusta la tabla */
-.table-container {
-    max-width: 350px; /* Fija el ancho máximo */
-    margin: 0 auto; /* Centra la tabla */
-    width: 100%; /* Asegura que se ajuste al contenedor */
-}
 
 .table {
     table-layout: fixed;
@@ -146,7 +140,7 @@ body{
     padding: 0.5rem;
 }
 
-@media (max-width: 576px) {
+@media (min-width: 100px) and(max-width: 576px) {
     .table-container {
         max-width: 350px;
     }

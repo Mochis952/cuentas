@@ -18,34 +18,6 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="groupMainTextInput">
-                    <label>Nombre del cliente</label>
-                    <input type="text" id="customer_name" name="customer_name">
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="groupMainTextInput">
-                    <label>Teléfono del cliente</label>
-                    <input type="text" id="customer_phone_number" name="customer_phone_number">
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="groupMainTextInput">
-                    <label>Medio de contacto</label>
-                    <select name="contact_medium" id="contact_medium">
-                        <option value="-1">Selecciona una opción</option>
-                        <option value="Facebook">Facebook</option>
-                        <option value="Whatsapp">Whatsapp</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="groupMainTextInput">
                     <label>Cuenta de streaming</label>
                     <select name="account_streaming" id="account_streaming">
                         <option value="-1">Selecciona una opción</option>
@@ -64,8 +36,44 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="groupMainTextInput">
+                    <label>Medio de contacto</label>
+                    <select name="contact_method" id="contact_method">
+                        <option value="-1">Selecciona una opción</option>
+                        <option value="Facebook">Facebook</option>
+                        <option value="Whatsapp">Whatsapp</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="groupMainTextInput">
+                    <label>Nombre en facebook</label>
+                    <input type="text" id="name_customer_facebook" name="name_customer_facebook">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="groupMainTextInput">
+                    <label>Teléfono</label>
+                    <input type="text" id="customer_phone_number" name="customer_phone_number">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="groupMainTextInput">
                     <label>Meses pagados</label>
-                    <input type="text" id="months_paid" name="months_paid" value="1">
+                    <input type="number" id="months_paid" name="months_paid" value="1">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="groupMainTextInput">
+                    <label>Nombre del cliente (opcional)</label>
+                    <input type="text" id="customer_name" name="customer_name">
                 </div>
             </div>
         </div>
@@ -89,8 +97,7 @@
     $("#registrationForm").validate({
         rules: {
             customer_name: {
-                required: true,
-                minlength: 3
+                required: false,
             },
             account_streaming: {
                 required: true
@@ -99,7 +106,13 @@
                 required: true
             },
             months_paid:{
-                required:true
+                required: true
+            },
+            name_customer_facebook: {
+                required: false
+            },
+            customer_phone_number: {
+                required : false
             }
         },
         messages: {
@@ -128,14 +141,11 @@
         unhighlight: function (element) {
             $(element).removeClass('is-invalid');
         },
-        submitHandler: function(form) {
+        submitHandler: function(form, event) {
+            event.preventDefault();
             $("#save_client").attr("disabled", true);
-            var formData = {
-                customer_name: $("#customer_name").val(),
-                customer_phone_number: $("#customer_phone_number").val(),
-                account_streaming: $("#account_streaming").val(),
-                contact_method: $("#contact_medium").val()
-            };
+            var formData = $(form).serializeArray();
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -147,11 +157,15 @@
                 data: formData,
 
                 success: function(response) {
-                    account_details(response);
-                    generates_toasts_success("Guardado!", "Cliente registrado!")
-                    setTimeout(() => {
-                        $("#save_client").attr("disabled", false);
-                    }, 5000);
+                    if(response.success == false){
+                        generates_toasts_error("Error!", "Cuentas llenas")
+                    }else{
+                        account_details(response.data_account);
+                        generates_toasts_success("Guardado!", "Cliente registrado!")
+                        setTimeout(() => {
+                            $("#save_client").attr("disabled", false);
+                        }, 5000);
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error("Error:", error);
@@ -180,9 +194,9 @@
         });
     }
     function account_details(data_account){
-        let email="";
-        let password="";
-        let perfil="";
+        let email = data_account.email;
+        let password = data_account.password;
+        let perfil = data_account.profile;
         let pin ="";
         let container_text =
             `<div class="row justify-content-center mt-1">
