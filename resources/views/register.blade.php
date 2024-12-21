@@ -213,9 +213,9 @@
                         </button>
                         <br>
                         <span id="text_client" class="col-10 p-0">
-                            Correo: ${email} \n
-                            Contraseña: ${password} \n
-                            Perfil: ${perfil} \n
+                            Correo: ${email} <br>
+                            Contraseña: ${password} <br>
+                            Perfil: ${perfil} <br>
                             Pin: ${pin}
                         </span>
                     </div>
