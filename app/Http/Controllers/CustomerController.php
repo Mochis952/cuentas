@@ -63,7 +63,7 @@ class CustomerController extends Controller
                     'customers_id' => $response_store_customer['data']['id'],
                     'account_id' => $accountStreaming->id,
                     'date_acquisition' => $request->date_acquisition,
-                    'date_expiration' => Carbon::parse($request->date_acquisition)->addMonth()->format('Y-m-d'),
+                    'date_expiration' => now()->addMonths(($request->months_paid) ),
                     'status' => 'active',
                     'profile' => '1',
                 ]);
