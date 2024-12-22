@@ -48,6 +48,7 @@ class CustomerController extends Controller
         return $customers;
     }
     public function add_customer(Request $request){
+        log::info($request);
             log::info($request->months_paid);
             log::info(now()->addMonths(($request->months_paid) ));
 
@@ -62,12 +63,13 @@ class CustomerController extends Controller
                     'error' => 'No hay cuentas disponibles para este tipo.'];
             }
             $response_store_customer = $this->store($request);
+            $date_expiration = Carbon::parse($request->date_acquisition)->addMonths($request->months_paid);
             if ($response_store_customer['success'] == true) {
                 CustomerAccount::create([
                     'customers_id' => $response_store_customer['data']['id'],
                     'account_id' => $accountStreaming->id,
                     'date_acquisition' => $request->date_acquisition,
-                    'date_expiration' => now()->addMonths(($request->months_paid) ),
+                    'date_expiration' => $date_expiration,
                     'status' => 'active',
                     'profile' => '1',
                 ]);
