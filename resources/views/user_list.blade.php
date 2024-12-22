@@ -20,8 +20,8 @@
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
-                                <th scope="col" style="width: 23%">Cliente</th>
-                                <th scope="col" style="width: 23%">Cuenta</th>
+                                <th scope="col" style="width: 31%">Cliente</th>
+                                <th scope="col" style="width: 21%">Cuenta</th>
                                 <th scope="col" style="width: 9%">📲</th>
                                 <th scope="col" style="width: 9%">📅</th>
                                 <th scope="col">Accion</th>
@@ -93,8 +93,8 @@
                             <td>${contact_icon[element.contact_method]}</td>
                             <td>${day}</td>
                             <td>
-                                <button type="button" class="btn btn-success p-2" style="font-size: .7rem !important;" onclick="bill_payment(${id},this)">Pago</button>
-                                <button type="button" class="btn btn-danger p-2" style="font-size: .7rem !important;" onclick="delete_user(${id},this)">Eliminar</button>
+                                <button type="button" class="btn btn-success p-2" style="font-size: .5rem !important;" onclick="bill_payment(${id},this)">Pago</button>
+                                <button type="button" class="btn btn-danger p-2" style="font-size: .5rem !important;" onclick="delete_user(${id},this)">Eliminar</button>
                             </td>
                             </tr>
                         `;
