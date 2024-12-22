@@ -7,6 +7,7 @@ use App\Models\Customer;
 use Illuminate\Support\Facades\Log;
 use App\Models\AccountStreaming;
 use App\Models\CustomerAccount;
+use Carbon\Carbon;
 
 
 
@@ -61,8 +62,8 @@ class CustomerController extends Controller
                 CustomerAccount::create([
                     'customers_id' => $response_store_customer['data']['id'],
                     'account_id' => $accountStreaming->id,
-                    'date_acquisition' => now()->toDateString(),
-                    'date_expiration' => now()->addMonths($request->months_paid)->toDateString(),
+                    'date_acquisition' => $request->date_acquisition,
+                    'date_expiration' => Carbon::parse($request->date_acquisition)->addMonth()->format('Y-m-d'),
                     'status' => 'active',
                     'profile' => '1',
                 ]);

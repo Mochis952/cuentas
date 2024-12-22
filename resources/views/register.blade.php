@@ -49,7 +49,7 @@
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="groupMainTextInput">
                     <label>Nombre en facebook</label>
-                    <input type="text" id="name_customer_facebook" name="name_customer_facebook">
+                    <input type="text" id="name_customer_facebook" name="name_customer_facebook" class="reset_number">
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="groupMainTextInput">
                     <label>Teléfono</label>
-                    <input type="text" id="customer_phone_number" name="customer_phone_number">
+                    <input type="text" id="customer_phone_number" name="customer_phone_number" class="reset_number">
                 </div>
             </div>
         </div>
@@ -72,8 +72,16 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="groupMainTextInput">
+                    <label>Fecha de inicio</label>
+                    <input type="date" id="date_acquisition" name="date_acquisition">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="groupMainTextInput">
                     <label>Nombre del cliente (opcional)</label>
-                    <input type="text" id="customer_name" name="customer_name">
+                    <input type="text" id="customer_name" name="customer_name" class="reset_number">
                 </div>
             </div>
         </div>
@@ -93,6 +101,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     $(document).ready(function() {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0]; // Formatear como "YYYY-MM-DD"
+        $('#date_acquisition').val(formattedDate);
+        $('.reset_number').on('input', function () {
+                let inputValue = $(this).val(); // Obtener el valor del campo
+
+                // Eliminar todos los espacios
+
+                // Contar números y no-números
+                let numCount = (inputValue.match(/\d/g) || []).length; // Contar dígitos
+                let nonNumCount = (inputValue.match(/\D/g) || []).length; // Contar no dígitos
+
+                // Si la mayoría son números
+                if (numCount > nonNumCount) {
+                    inputValue = inputValue.replace(/\s+/g, '');
+                    let lastTen = inputValue.slice(-11);
+                    $(this).val(lastTen);
+                } else {
+                    $(this).val(inputValue);
+                }
+            });
     // Configurar la validación del formulario
     $("#registrationForm").validate({
         rules: {
@@ -113,6 +142,9 @@
             },
             customer_phone_number: {
                 required : false
+            },
+            date_acquisition:{
+                required : true
             }
         },
         messages: {
@@ -143,7 +175,7 @@
         },
         submitHandler: function(form, event) {
             event.preventDefault();
-            $("#save_client").attr("disabled", true);
+            $("#save_client").prop("disabled", true);
             var formData = $(form).serializeArray();
 
             $.ajaxSetup({
@@ -161,16 +193,17 @@
                         generates_toasts_error("Error!", "Cuentas llenas")
                     }else{
                         account_details(response.data_account);
+                        $('#registrationForm')[0].reset();
                         generates_toasts_success("Guardado!", "Cliente registrado!")
                         setTimeout(() => {
-                            $("#save_client").attr("disabled", false);
+                            $("#save_client").prop("disabled", false);
                         }, 5000);
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error("Error:", error);
                     generates_toasts_error("Error!", error)
-                    $("#save_client").attr("disabled", false);
+                    $("#save_client").prop("disabled", false);
                 }
             });
         }

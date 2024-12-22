@@ -223,7 +223,7 @@
             submitHandler: function(form, event) {
                 event.preventDefault();
 
-                $("#save_account_streaming").attr("disabled", true);
+                $("#save_account_streaming").prop("disabled", true);
                 var formData = $(form).serializeArray();
 
                 $.ajaxSetup({
@@ -236,9 +236,9 @@
                     type: 'POST',
                     data: formData,
                     success: function(response) {
-
+                        $('#registrationForm')[0].reset(); 
                         setTimeout(() => {
-                            $("#save_account_streaming").attr("disabled", false);
+                            $("#save_account_streaming").prop("disabled", false);
                         }, 5000);
                         toastr.success('Cuenta agregada', 'Guardado', {
                             timeOut: 5000,
@@ -250,7 +250,7 @@
                     },
                     error: function(xhr, status, error) {
                         console.error("Error:", error);
-                        $("#save_account_streaming").attr("disabled", false);
+                        $("#save_account_streaming").prop("disabled", false);
                         toastr.error('Error', error, {
                             timeOut: 5000,
                             positionClass: 'toast-top-right',

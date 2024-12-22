@@ -114,7 +114,6 @@
             },
             error: function(xhr, status, error) {
                 console.error("Error:", error);
-                $("#save_account_streaming").attr("disabled", false);
                 toastr.error('Error', error, {
                     timeOut: 5000,
                     positionClass: 'toast-top-right',
