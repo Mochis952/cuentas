@@ -20,10 +20,10 @@
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
-                                <th scope="col" style="width: 20%">Cliente</th>
-                                <th scope="col" style="width: 20%">Cuenta</th>
-                                <th scope="col" style="width: 11%">Cto</th>
-                                <th scope="col" style="width: 14%">Pago</th>
+                                <th scope="col" style="width: 23%">Cliente</th>
+                                <th scope="col" style="width: 23%">Cuenta</th>
+                                <th scope="col" style="width: 9%">📲</th>
+                                <th scope="col" style="width: 9%">📅</th>
                                 <th scope="col">Accion</th>
                             </tr>
                         </thead>
