@@ -38,9 +38,13 @@ class CustomerController extends Controller
         }
     }
     public function index(){
-        $customers = Customer::with([
-            'customerAccounts.accountStreaming',
-        ])->get();
+        $customers = Customer::select('customers.*')
+    ->join('customers_account', 'customers.id', '=', 'customers_account.customers_id')
+    ->with(['customerAccounts.accountStreaming'])
+    ->orderBy('customers_account.date_expiration', 'asc')
+    ->get();
+
+
         return $customers;
     }
     public function add_customer(Request $request){
