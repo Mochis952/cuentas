@@ -21,7 +21,7 @@ class CustomerAccount extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customers_id');
     }
 
     public function accountStreaming()

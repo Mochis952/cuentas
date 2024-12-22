@@ -154,7 +154,15 @@ body{
     h1 {
         font-size: 1.2rem;
     }
+    button{
+        font-size: .7rem !important;
+    }
+    p{
+        margin: 0 !important;
+        margin-bottom: 2px !important;
+    }
 }
+
 
 
 

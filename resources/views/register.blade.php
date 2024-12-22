@@ -223,25 +223,6 @@
             </div>`;
         $("#registrationForm").append(container_text);
     }
-    function generates_toasts_success(main_text, secondary_text){
-        toastr.success(secondary_text, main_text, {
-            timeOut: 5000,
-            positionClass: 'toast-top-right',
-            closeButton: true,
-            progressBar: true,
-            "toastClass": "custom-toast-success",
-        });
-    }
-    function generates_toasts_error(main_text, secondary_text){
-        toastr.error(secondary_text, main_text, {
-            timeOut: 5000,
-            positionClass: 'toast-top-right',
-            closeButton: true,
-            progressBar: true,
-            "toastClass": "custom-toast-error",
-        });
-    }
-
 </script>
 @endpush
 

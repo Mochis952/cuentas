@@ -17,19 +17,29 @@ Route::get('/', function () {
     return view('welcome');
 })->name('laravel');
 
-Route::get('/registar/usuarios', function () {
+Route::get('/usuarios/registrar', function () {
     return view('register');
 })->name('register');
 
-Route::get('/registar/cuentas', function () {
+Route::get('/cuentas/registrar', function () {
     return view('register_account_streaming');
-})->name('register_account_streaming)');
+})->name('register_account_streaming');
 
 Route::get('/cuentas', function () {
     return view('account_streaming');
-})->name('account_streaming)');
+})->name('account_streaming');
+
+Route::get('/usuarios', function () {
+    return view('user_list');
+})->name('user_list');
+
 Route::post('/add_customer', 'App\Http\Controllers\CustomerController@add_customer')->name('add_customer');
 Route::post('/add_account', 'App\Http\Controllers\AccountController@store')->name('add_account');
 Route::get('/account_streaming/index', 'App\Http\Controllers\AccountController@index')->name('index_account_streaming');
+Route::get('/customer/index', 'App\Http\Controllers\CustomerController@index')->name('index_customer');
+Route::patch('/customer_account/update/{id}', 'App\Http\Controllers\CustomerAccountController@update')->name('update_customer_account');
+Route::delete('/customer_account/delete/{id}', 'App\Http\Controllers\CustomerAccountController@delete')->name('delete_customer_account');
+
+
 
 

@@ -50,7 +50,23 @@
             url: "{{ route ('index_account_streaming')}}",
             type: 'GET',
             success: function(response) {
+                console.log(response);
                 response.forEach(function(element, index) {
+                    let customer_accounts = element.customer_accounts;
+                    var data_customers = "";
+                    customer_accounts.forEach(function(element2, index) {
+                        data_customers = data_customers + `
+                            <div class="col-6">
+                                <p>Cliente: ${element2.customer.name_customer_facebook}</p>
+                                <p>Metodo de contacto: ${element2.customer.contact_method}</p>
+                                <p>Proxima fecha de pago: ${element2.date_expiration}</p>
+                                <p>Perfil: ${element2.profile}</p>
+                                <hr>
+                            </div>
+                        `;
+                    });
+
+                    console.log(data_customers)
                     let color_tr = {
                         "Netflix": "table-danger",
                         "Spotify": "table-success",
@@ -65,7 +81,7 @@
                         <tr class="${color_tr[element.name_service]}" style="cursor:pointer;" onclick="show_hide_data_acount(${element.id})" >
                             <th scope="row">${element.name_service}</th>
                             <td>${element.email}</td>
-                            <td></td>
+                            <td>${element.user_active}</td>
                             <td>${element.user_max}</td>
                             <td>${element.status == "active" ? '🟢' : '🔴'}</td>
                             </tr>
@@ -85,8 +101,9 @@
                                 </div>
                             </td>
                             <td colspan="4">
-                                <div class="description-container col-12">
+                                <div class="description-container col-12 row">
                                     <p><strong>Cliente datos</strong></p>
+                                    ${data_customers}
                                 </div>
                             </td>
                         </tr>

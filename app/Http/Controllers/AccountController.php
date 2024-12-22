@@ -51,7 +51,9 @@ class AccountController extends Controller
         }
     }
     public function index(){
-        $accounts = AccountStreaming::orderBy('name_service','asc')->get();
+        $accounts = AccountStreaming::with(["customerAccounts.customer"])
+        ->orderBy('name_service','asc')
+            ->get();
         return $accounts ;
     }
 }

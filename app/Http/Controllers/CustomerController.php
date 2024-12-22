@@ -37,6 +37,12 @@ class CustomerController extends Controller
             ];
         }
     }
+    public function index(){
+        $customers = Customer::with([
+            'customerAccounts.accountStreaming',
+        ])->get();
+        return $customers;
+    }
     public function add_customer(Request $request){
             log::info(now()->addMonths(($request->months_paid) ));
 
