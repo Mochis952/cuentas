@@ -61,13 +61,13 @@
                     customer_accounts.forEach(function(element, index) { //todas las cuentas que tienen
                         dateExpiration = element.date_expiration
                         name_service = element.account_streaming.name_service
-                        id = element.account_id
+                        id = element.id
                     });
                     const today = new Date();
                     let expirationDate = new Date(dateExpiration);
                     let differenceInTime = expirationDate - today;
                     let differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
-                    let day = expirationDate.getDate();
+                    let day = dateExpiration.split("-")[2];
                     let color = null;
                     if (differenceInDays <= 3 && differenceInDays >= 0) {
                         color = 1;
@@ -85,20 +85,16 @@
                         "Facebook" : '<i class="fab fa-facebook"></i>',
                         "Whatsapp" : '<i class="fab fa-whatsapp"></i>'
                     }
-                    let data_bill = {
-                        "id": id,
-                        "date_expiration": dateExpiration
-                    }
                     let user_name = element.contact_method == "Facebook" ? element.name_customer_facebook : element.customer_phone_number;
                     let customer = `
-                        <tr id="${element.id}" class="${color_tr[color]}" style="cursor:pointer;" onclick="show_hide_data_acount(${element.id})" >
+                        <tr id="${id}" class="${color_tr[color]}" style="cursor:pointer;" onclick="show_hide_data_acount(${id})" >
                             <th scope="row">${user_name}</th>
                             <td>${name_service}</td>
                             <td>${contact_icon[element.contact_method]}</td>
                             <td>${day}</td>
                             <td>
-                                <button type="button" class="btn btn-success p-2" style="font-size: .7rem !important;" onclick="bill_payment(${element.id},this)">Pago</button>
-                                <button type="button" class="btn btn-danger p-2" style="font-size: .7rem !important;" onclick="delete_user(${element.id},this)">Eliminar</button>
+                                <button type="button" class="btn btn-success p-2" style="font-size: .7rem !important;" onclick="bill_payment(${id},this)">Pago</button>
+                                <button type="button" class="btn btn-danger p-2" style="font-size: .7rem !important;" onclick="delete_user(${id},this)">Eliminar</button>
                             </td>
                             </tr>
                         `;
@@ -137,8 +133,8 @@
             }
         });
         $.ajax({
-            url: "/customer_account/update/"+id,
-            type: 'PATCH',
+            url: "/customer_account/update/" + id,
+            type: 'POST',
             success: function(response) {
                 setTimeout(() => {
                     $(element).prop('disabled', false);
@@ -149,7 +145,7 @@
             },
             error: function(xhr, status, error) {
                 $(element).prop('disabled', false);
-                generates_toasts_error("No se actualizo el pago", "Error: " + error)
+                generates_toasts_error("No se actualizó el pago", "Error: " + error);
             }
         });
     }
@@ -168,7 +164,7 @@
             type: 'DELETE',
             success: function(response) {
                 $('#'+id).remove();
-                generates_toasts_success("Usuario eliminado", "Espero que vuelva :( )")
+                generates_toasts_success("Usuario eliminado", "Espero que vuelva :( ")
             },
             error: function(xhr, status, error) {
                 $(element).prop('disabled', false);

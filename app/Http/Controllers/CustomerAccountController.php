@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class CustomerAccountController extends Controller
 {
-    public function update($id){
-        $customer = CustomerAccount::findOrFail($id);
+    public function update_pay(Request $request){
+        $customer = CustomerAccount::findOrFail($request->id);
         $customer->date_expiration = Carbon::parse($customer->date_expiration)->addMonth();
         $customer->save();
         return response()->json([

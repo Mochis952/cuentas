@@ -21,7 +21,6 @@ class CustomerController extends Controller
             'contact_method'=> 'required',
             'name_customer_facebook'=> '',
         ]);
-        $customer = Customer::create($validatedData);
         try {
             $customer = Customer::create($validatedData);
             return [
@@ -45,6 +44,7 @@ class CustomerController extends Controller
         return $customers;
     }
     public function add_customer(Request $request){
+            log::info($request->months_paid);
             log::info(now()->addMonths(($request->months_paid) ));
 
             $accountStreaming = AccountStreaming::where('name_service', $request->account_streaming)
