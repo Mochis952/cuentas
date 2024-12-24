@@ -39,4 +39,5 @@ Route::get('/account_streaming/index', 'App\Http\Controllers\AccountController@i
 Route::get('/customer/index', 'App\Http\Controllers\CustomerController@index')->name('index_customer');
 Route::post('/customer_account/update/{id}', 'App\Http\Controllers\CustomerAccountController@update_pay')->name('update_customer_account');
 Route::delete('/customer_account/delete/{id}', 'App\Http\Controllers\CustomerAccountController@delete')->name('delete_customer_account');
+Route::get('/account_streaming/available/{name_service}', 'App\Http\Controllers\AccountStreamingController@get_account_streaming_available')->name('account_streaming_available');
 

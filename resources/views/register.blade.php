@@ -88,6 +88,16 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="groupMainTextInput">
+                    <label>Cuenta asiganda</label>
+                    <select name="assigned_account" id="assigned_account">
+                        <option value="-1">Aleatorio</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="groupMainTextInput">
                     <button class="success"type="submit" id="save_client" >Guardar cliente</button>
                 </div>
             </div>
@@ -101,6 +111,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     $(document).ready(function() {
+        $('#account_streaming').on('change', function() {
+            $('#assigned_account').empty();
+            $('#assigned_account').append('<option value="-1">Aleatorio</option>');
+
+            var selectedValue = $(this).val();
+            get_account_streaming_available(selectedValue);
+        });
         const today = new Date();
         const formattedDate = today.toISOString().split('T')[0]; // Formatear como "YYYY-MM-DD"
         $('#date_acquisition').val(formattedDate);
@@ -145,6 +162,9 @@
             },
             date_acquisition:{
                 required : true
+            },
+            assigned_account:{
+                required : false
             }
         },
         messages: {
@@ -203,7 +223,7 @@
                 error: function(xhr, status, error) {
                     console.error("Error:", error);
                     generates_toasts_error("Error!", error)
-                    $("#save_client").prop("disabled", false);
+                    $("#save_client").prop("disabled", false);;
                 }
             });
         }
@@ -255,6 +275,28 @@
                 </div>
             </div>`;
         $("#registrationForm").append(container_text);
+    }
+    function get_account_streaming_available(name_service){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "/account_streaming/available/"+name_service,
+            type: 'GET',
+            success: function(response) {
+                var newOptions = "";
+                if(response.length != 0){
+                    response.forEach(function(value, index) {
+                        newOptions = newOptions + `<option value="${value.id}">${value.email}</option>`;
+                    });
+                $('#assigned_account').append(newOptions);
+                }
+            },
+            error: function(xhr, status, error) {
+            }
+        });
     }
 </script>
 @endpush

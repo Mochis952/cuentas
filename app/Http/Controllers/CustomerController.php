@@ -48,42 +48,46 @@ class CustomerController extends Controller
         return $customers;
     }
     public function add_customer(Request $request){
-        log::info($request);
-            log::info($request->months_paid);
-            log::info(now()->addMonths(($request->months_paid) ));
-
+        $accountStreaming = null;
+        if($request->assigned_account == "-1"){
             $accountStreaming = AccountStreaming::where('name_service', $request->account_streaming)
                 ->whereColumn('user_active', '<', 'user_max')
                 ->where('status', 'active')
                 ->first();
-            log::info($accountStreaming);
-            if (!$accountStreaming) {
-                return [
-                    'success'=> false,
-                    'error' => 'No hay cuentas disponibles para este tipo.'];
-            }
-            $response_store_customer = $this->store($request);
-            $date_expiration = Carbon::parse($request->date_acquisition)->addMonths($request->months_paid);
-            if ($response_store_customer['success'] == true) {
-                CustomerAccount::create([
-                    'customers_id' => $response_store_customer['data']['id'],
-                    'account_id' => $accountStreaming->id,
-                    'date_acquisition' => $request->date_acquisition,
-                    'date_expiration' => $date_expiration,
-                    'status' => 'active',
-                    'profile' => '1',
-                ]);
-                $accountStreaming->increment('user_active');
-                return response()->json([
-                    'success'=> true,
-                    "data_account" => [
-                        "email" => $accountStreaming->email,
-                        "password"=> $accountStreaming->password,
-                        "profile" => "1"
-                    ]
-                ]);
-            } else {
-                return response()->json($response_store_customer);
-            }
+        }else{
+            $accountStreaming = AccountStreaming::where('id', $request->assigned_account)
+                ->whereColumn('user_active', '<', 'user_max')
+                ->first();
+        }
+
+        log::info($accountStreaming);
+        if (!$accountStreaming) {
+            return [
+                'success'=> false,
+                'error' => 'No hay cuentas disponibles para este tipo.'];
+        }
+        $response_store_customer = $this->store($request);
+        $date_expiration = Carbon::parse($request->date_acquisition)->addMonths($request->months_paid);
+        if ($response_store_customer['success'] == true) {
+            CustomerAccount::create([
+                'customers_id' => $response_store_customer['data']['id'],
+                'account_id' => $accountStreaming->id,
+                'date_acquisition' => $request->date_acquisition,
+                'date_expiration' => $date_expiration,
+                'status' => 'active',
+                'profile' => '1',
+            ]);
+            $accountStreaming->increment('user_active');
+            return response()->json([
+                'success'=> true,
+                "data_account" => [
+                    "email" => $accountStreaming->email,
+                    "password"=> $accountStreaming->password,
+                    "profile" => "1"
+                ]
+            ]);
+        } else {
+            return response()->json($response_store_customer);
+        }
     }
 }
