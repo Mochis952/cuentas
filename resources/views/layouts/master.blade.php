@@ -37,6 +37,12 @@
                         Cuentas
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('register_account_streaming') }}"
+                        class="nav-link {{ Route::is('register_account_streaming') ? 'active' : '' }}">
+                        Registrar cuentas
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
