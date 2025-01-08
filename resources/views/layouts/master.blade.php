@@ -13,7 +13,10 @@
     @stack('styles')
 </head>
 <body>
-    <nav class="row navbar navbar-expand-lg bg-light menu">
+    <header>
+        <h1 style="text-align: center;">Administrador de cuentas de streaming</h1>
+    </header>
+    <nav class="row navbar navbar-expand-lg bg-light menu d-none">
         <div class="logo col-3">
             <!-- <img src="{{ asset('img/logo.png') }}" alt="logo" style="width:100%"> -->
         </div>
@@ -46,10 +49,18 @@
             </ul>
         </div>
     </nav>
-
-    <div class="master">
-        @yield('content')
+    <div class="container-navigation">
+        <nav class="navigation-main">
+            <a href="{{ route('register') }}" class="{{ Route::is('register') ? 'page-active' : '' }}">Registrar clientes</a>
+            <a href="{{ route('user_list') }}" class="{{ Route::is('user_list') ? 'page-active' : '' }}">Usuarios</a>
+            <a href="{{ route('account_streaming') }}" class="{{ Route::is('account_streaming') ? 'page-active' : '' }}">Cuentas</a>
+            <a href="{{ route('register_account_streaming') }}" class="{{ Route::is('register_account_streaming') ? 'page-active' : '' }}">Registrar cuentas</a>
+        </nav>
     </div>
+
+    <main class="master">
+        @yield('content')
+    </main>
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

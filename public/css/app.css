@@ -1,5 +1,9 @@
+html{
+    font-size: 62.5%;
+}
 body{
     background: #121212;
+    font-size: 16px;
 }
 .menu{
     background-color: #1c1c1c !important;
@@ -16,14 +20,14 @@ body{
 }
 .container{
     width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
     margin-right: auto;
     margin-left: auto;
-    padding-top: 15px;
-    margin-top: 30px;
-    padding-bottom: 15px;
-    margin-bottom: 30px;
+    padding-top: 1.5rem;
+    margin-top: 3rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 3rem;
     background-color: #1c1c1c;
     justify-content: center;
     justify-items: center;
@@ -40,7 +44,7 @@ body{
     color: white;
 }
 .groupMainTextInput input{
-    font-size: 14px;
+    font-size: 1.4rem;
     padding: 4px 5px 4px 3px;
     display: block;
     width: 100%;
@@ -49,7 +53,7 @@ body{
     background: 2px solid #ced4da;
 }
 .groupMainTextInput select{
-    font-size: 14px;
+    font-size: 1.4rem;
     padding: 4px 5px 4px 3px;
     display: block;
     width: 100%;
@@ -58,14 +62,14 @@ body{
     background: 2px solid #ced4da;
 }
 .groupMainTextInput button{
-    font-size: 14px;
+    font-size: 1.4rem;
     padding: 4px 5px 4px 3px;
     display: block;
     width: 100%;
     border: 2px solid #ced4da;
     color: #333;
     background: 2px solid #ced4da;
-    border-radius: 10px;
+    border-radius: 1rem;
 }
 .error{
     color: red;
@@ -85,8 +89,8 @@ body{
     color: white;
 }
 .copy-icon {
-    width: 24px;
-    height: 24px;
+    width: 2.4rem;
+    height: 2.4rem;
     cursor: pointer;
     fill: #333; /* Color del icono */
 }
@@ -96,7 +100,7 @@ body{
 }
 .container_text{
     background: antiquewhite;
-    border-radius: 10px;
+    border-radius: 1rem;
     text-align: center;
 }
 .table-purple {
@@ -141,7 +145,7 @@ body{
 
 @media (min-width: 100px) and(max-width: 576px) {
     .table-container {
-        max-width: 350px;
+        max-width: 3.5rem;
     }
 
     .table th,
@@ -161,6 +165,30 @@ body{
         margin-bottom: 2px !important;
     }
 }
+.container-navigation{
+    background-color: #1c1c1c;
+}
+.navigation-main{
+    display: flex;
+    justify-content: space-around;
+}
+.navigation-main a{
+    font-size: 1.5rem;
+    color: white;
+    text-decoration: none;
+    padding: 1rem;
+}
+.navigation-main a:hover {
+    background-color: #FFD700;
+    color: black;
+}
+@media (max-width: 400px) {
+    .navigation-main{
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
 
 
 
