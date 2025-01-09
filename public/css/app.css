@@ -177,6 +177,7 @@ body{
     color: white;
     text-decoration: none;
     padding: 1rem;
+    font-weight: 700;
 }
 .navigation-main a:hover {
     background-color: #FFD700;
@@ -186,6 +187,10 @@ body{
     .navigation-main{
         flex-direction: column;
         align-items: center;
+    }
+    .navigation-main a{
+        width: 100%;
+        text-align: center;
     }
 }
 
