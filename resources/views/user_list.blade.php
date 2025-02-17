@@ -8,6 +8,54 @@
 @endpush
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <div class="modal fade" id="update_profile_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <form id="update_profile">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Datos del perfil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="groupMainTextInput">
+                                    <label>Perfil</label>
+                                    <select name="profile" id="profile">
+                                        <option value="-1">Selecciona una opción</option>
+                                        <option value="1">Perfil 1</option>
+                                        <option value="2">Perfil 2</option>
+                                        <option value="3">Perfil 3</option>
+                                        <option value="4">Perfil 4</option>
+                                        <option value="5">Perfil 5</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="groupMainTextInput">
+                                    <label>Pin del perfil</label>
+                                    <input type="text" id="pin_profile" name="pin_profile">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center d-none">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="groupMainTextInput">
+                                    <label>ID PERFIL</label>
+                                    <input type="id_user" id="id_user" name="id_user">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="update_profile_button"type="submit" class="btn btn-primary w-100">Actualizar perfil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div id="list_container" class="container-fluid quote-box">
         <div class="row">
             <div class="col-12 text-center">
@@ -37,6 +85,7 @@
 
 @endsection
 @push('scripts')
+<script src="{{ asset('js/jquery.validate.min.js') }}"></script>
 <script>
     $(document).ready(function() {
         get_data_account_streaming();
@@ -95,6 +144,7 @@
                             <td>
                                 <button type="button" class="btn btn-success p-2" style="font-size: .5rem !important;" onclick="bill_payment(${id},this)">Pago</button>
                                 <button type="button" class="btn btn-danger p-2" style="font-size: .5rem !important;" onclick="delete_user(${id},this)">Eliminar</button>
+                                <button type="button" class="btn btn-warning p-2" style="font-size: .5rem !important;" onclick="update_profile(${id},this)">Eliminar</button>
                             </td>
                             </tr>
                         `;
@@ -172,6 +222,71 @@
             }
         });
     }
+    function update_profile(id, element){
+        reset_modal_update_profile();
+        $('#id_user').val(id);
+        $('#update_profile_modal').modal('show');
+    }
+    function reset_modal_update_profile(){
+        $('#id_user').val('');
+        $('#profile').val('');
+        $('#pin_profile').val('');
+    }
+    $("#update_profile").validate({
+            rules: {
+                id_user: {
+                    required: false,
+                },
+                profile: {
+                    required: true
+                },
+            },
+            messages: {
+                id_user: {
+                    required: "Se seleciono mal el usuario.",
+                },
+                profile: {
+                    required: "Por favor, selecciona una perfil."
+                },
+            },
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                error.addClass('error');
+                element.closest('.groupMainTextInput').append(error);
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
+            submitHandler: function(form, event) {
+                event.preventDefault();
+                $("#update_profile_button").prop("disabled", true);
+                var formData = $(form).serializeArray();
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: "/customer_account/update_profile",
+                    type: 'POST',
+                    data: formData,
+
+                    success: function(response) {
+                        generates_toasts_success("Perfil actualizado", "Actualizacion correcta")
+                        $("#update_profile_button").prop("disabled", false);
+                        $('#update_profile_modal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        generates_toasts_error("No se actualizó el perfil", "Error: " + error);
+                        $("#update_profile_button").prop("disabled", false);;
+                    }
+                });
+            }
+        });
 
 </script>
 @endpush

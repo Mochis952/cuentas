@@ -8,10 +8,12 @@ use App\Models\Customer;
 use App\Models\AccountStreaming;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CustomerAccountController extends Controller
 {
     public function update_pay(Request $request){
+        
         $customer = CustomerAccount::findOrFail($request->id);
         $customer->date_expiration = Carbon::parse($customer->date_expiration)->addMonth();
         $customer->save();
@@ -54,5 +56,17 @@ class CustomerAccountController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+    public function update_profile(Request $request){
+        log::info("request update_profile");
+        log::info($request);
+        $customer = CustomerAccount::findOrFail($request->id_user);
+        $customer->profile = $request->profile;
+        $customer->pin_profile = $request->pin_profile;
+        $customer->save();
+        return response()->json([
+            "succes" => true,
+            'message' => 'Cuenta actualizada.',
+        ]);
     }
 }
