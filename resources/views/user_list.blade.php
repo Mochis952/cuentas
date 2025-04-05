@@ -68,9 +68,9 @@
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
-                                <th scope="col" style="width: 31%">Cliente</th>
-                                <th scope="col" style="width: 21%">Cuenta</th>
-                                <th scope="col" style="width: 9%">📲</th>
+                                <th scope="col" style="width: 15%">Cliente</th>
+                                <th scope="col" style="width: 15%">Cuenta</th>
+                                <th scope="col" style="width: 30%">Datos</th>
                                 <th scope="col" style="width: 9%">📅</th>
                                 <th scope="col">Accion</th>
                             </tr>
@@ -106,11 +106,13 @@
                     let customer_accounts = element.customer_accounts;
                     var dateExpiration = null;
                     var name_service = null;
+                    var data_account =null;
                     var id = null
                     customer_accounts.forEach(function(element, index) { //todas las cuentas que tienen
                         dateExpiration = element.date_expiration
                         name_service = element.account_streaming.name_service
                         id = element.id
+                        data_account = "Correo: " + element.account_streaming.email + " <br> Contraseña: " + element.account_streaming.password + " <br> Perfil: " + element.profile + " <br> Pin: " + element.pin_profile;
                     });
                     const today = new Date();
                     let expirationDate = new Date(dateExpiration);
@@ -139,7 +141,7 @@
                         <tr id="${id}" class="${color_tr[color]}" style="cursor:pointer;" onclick="show_hide_data_acount(${id})" >
                             <th scope="row">${user_name}</th>
                             <td>${name_service}</td>
-                            <td>${contact_icon[element.contact_method]}</td>
+                            <td>${data_account}</td>
                             <td>${day}</td>
                             <td>
                                 <button type="button" class="btn btn-success p-2" style="font-size: .5rem !important;" onclick="bill_payment(${id},this)">Pago</button>
