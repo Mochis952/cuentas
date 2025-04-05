@@ -146,7 +146,7 @@
                             <td>
                                 <button type="button" class="btn btn-success p-2" style="font-size: .5rem !important;" onclick="bill_payment(${id},this)">Pago</button>
                                 <button type="button" class="btn btn-danger p-2" style="font-size: .5rem !important;" onclick="delete_user(${id},this)">Eliminar</button>
-                                <button type="button" class="btn btn-warning p-2" style="font-size: .5rem !important;" onclick="update_profile(${id},this)">Eliminar</button>
+                                <button type="button" class="btn btn-warning p-2" style="font-size: .5rem !important;" onclick="update_profile(${id},this)">Actualizar</button>
                             </td>
                             </tr>
                         `;
