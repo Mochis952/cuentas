@@ -5,6 +5,90 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<style>
+    /* Estilos para la tabla y sus componentes */
+    .table-container {
+        background-color: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        padding: 1rem;
+        overflow-x: auto; /* Para responsividad en móviles */
+    }
+    .table th.col-service { width: 15%; }
+    .table th.col-email { width: 25%; }
+    .table th.col-users, .table th.col-max, .table th.col-status { width: 8%; text-align: center; }
+    .table th.col-actions { width: 12%; text-align: center; }
+
+    .main-row {
+        cursor: pointer;
+    }
+
+    /* Fila de detalles expandida */
+    .details-row td {
+        padding: 0 !important;
+        background-color: #f8f9fa;
+        border: none;
+    }
+    .details-container {
+        padding: 1.5rem;
+    }
+    .details-card {
+        border: 1px solid #dee2e6;
+        box-shadow: none;
+        height: 100%;
+    }
+    .details-card .card-header {
+        font-weight: 600;
+        background-color: #e9ecef;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .details-card .list-group-item {
+        background-color: #fff;
+        border-bottom: 1px solid #f0f0f0 !important;
+    }
+    .details-card .list-group-item:last-child {
+        border-bottom: none !important;
+    }
+    .details-card strong {
+        color: #343a40;
+    }
+
+    /* Icono de expansión */
+    .expand-chevron {
+        transition: transform 0.3s ease-in-out;
+        font-size: 0.9rem;
+        vertical-align: middle;
+    }
+    .expand-chevron.rotated {
+        transform: rotate(180deg);
+    }
+
+    /* Chat bubble styles */
+    .chat-bubble {
+        padding: 10px 15px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        max-width: 75%;
+        position: relative;
+        clear: both;
+        word-wrap: break-word;
+    }
+    .chat-bubble.from-me {
+        background-color: #dcf8c6;
+        float: right;
+    }
+    .chat-bubble.from-them {
+        background-color: #fff;
+        float: left;
+    }
+    .chat-timestamp {
+        font-size: 0.75rem;
+        color: #999;
+        display: block;
+        text-align: right;
+        margin-top: 5px;
+    }
+</style>
 @endpush
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -56,6 +140,33 @@
             </div>
         </div>
     </div>
+    <!-- Chat History Modal -->
+    <div class="modal fade" id="chatHistoryModal" tabindex="-1" aria-labelledby="chatHistoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chatHistoryModalLabel">Historial de Conversación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="chatHistoryBody" style="background-color: #e5ddd5; overflow-y: auto; padding-bottom: 20px;">
+                    <!-- Chat messages will be loaded here -->
+                </div>
+                <div class="modal-footer bg-light">
+                    <div class="w-100">
+                        <div id="quickRepliesContainer" class="mb-2">
+                            <!-- Quick replies will be loaded here -->
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="chatMessageInput" class="form-control" placeholder="Escribe un mensaje...">
+                            <button class="btn btn-primary" type="button" id="sendMessageBtn">
+                                <i class="fas fa-paper-plane"></i> Enviar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="list_container" class="container-fluid quote-box">
         <div class="row">
             <div class="col-12 text-center">
@@ -89,6 +200,21 @@
 <script>
     $(document).ready(function() {
         get_data_account_streaming();
+        $('#sendMessageBtn').on('click', function() {
+            sendMessage();
+        });
+
+        $('#chatMessageInput').on('keypress', function(e) {
+            if (e.which === 13 && !e.shiftKey) { // Enter key without Shift
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        $('#quickRepliesContainer').on('click', '.quick-reply-btn', function() {
+            const message = $(this).text();
+            $('#chatMessageInput').val(message).focus();
+        });
     });
     function get_data_account_streaming(){
         $.ajaxSetup({
@@ -102,7 +228,8 @@
             success: function(response) {
                 console.log(response);
                 response.forEach(function(element, index) { //todos los usuarios
-
+                    console.log(" primero");
+                    console.log(element);
                     let customer_accounts = element.customer_accounts;
                     var dateExpiration = null;
                     var name_service = null;
@@ -147,6 +274,7 @@
                                 <button type="button" class="btn btn-success p-2" style="font-size: .5rem !important;" onclick="bill_payment(${id},this)">Pago</button>
                                 <button type="button" class="btn btn-danger p-2" style="font-size: .5rem !important;" onclick="delete_user(${id},this)">Eliminar</button>
                                 <button type="button" class="btn btn-warning p-2" style="font-size: .5rem !important;" onclick="update_profile(${id},this)">Actualizar</button>
+                                <button class="btn btn-info btn-sm" title="Ver Historial" onclick='viewHistory(event, ${JSON.stringify(element)})'><i class="fas fa-history"></i></button>
                             </td>
                             </tr>
                         `;
@@ -233,6 +361,123 @@
         $('#id_user').val('');
         $('#profile').val('');
         $('#pin_profile').val('');
+    }
+    function viewHistory(event, customer) {
+        event.stopPropagation();
+
+        const contactId = customer.customer_phone_number;
+        if (!contactId) {
+            toastr.error('Este cliente no tiene un número de contacto para ver el historial.', 'Error');
+            return;
+        }
+
+        const modalElement = document.getElementById('chatHistoryModal');
+        const modal = new bootstrap.Modal(modalElement);
+        const modalBody = $('#chatHistoryBody');
+
+        // Store contactId in the modal's data attribute to be used by sendMessage
+        $(modalElement).data('contact-id', contactId);
+        
+        $('#chatHistoryModalLabel').text(`Historial de: ${customer.name_customer_facebook || contactId}`);
+        modal.show();
+        modalBody.html('<div class="d-flex justify-content-center p-5"><div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div></div>');
+
+        // --- Cargar Respuestas Rápidas ---
+        const quickRepliesContainer = $('#quickRepliesContainer');
+        quickRepliesContainer.empty();
+        const quickReplies = [
+            "¡Hola! Te escribo para recordarte que tu suscripción vence pronto. ¿Deseas renovar?",
+            "Tu servicio ha expirado. Si deseas continuar, por favor realiza tu pago.",
+            "¡Gracias por tu pago! Hemos reactivado tu servicio.",
+            "Recibido. En un momento te confirmo.",
+            "¿Cómo estás? ¿Necesitas ayuda con algo?"
+        ];
+        quickReplies.forEach(reply => {
+            const button = `<button type="button" class="btn btn-outline-secondary btn-sm me-1 mb-1 quick-reply-btn">${reply}</button>`;
+            quickRepliesContainer.append(button);
+        });
+
+        $.ajax({
+            url: `/chat/history/${contactId}`,
+            type: 'GET',
+            success: function(response) {
+                modalBody.empty();
+                if (response.messages && response.messages.length > 0) {
+                    response.messages.forEach(function(message) {
+                        appendMessageToChat(message.body, message.fromMe, message.timestamp);
+                    });
+                    modalBody.scrollTop(modalBody[0].scrollHeight);
+                } else {
+                    modalBody.html('<p class="text-center text-muted p-5">No hay mensajes en el historial.</p>');
+                }
+            },
+            error: function(xhr, status, error) {
+                let errorMessage = "No se pudo cargar el historial. Verifique que la ruta y el controlador existan.";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                modalBody.html(`<div class="alert alert-danger m-3">${errorMessage}</div>`);
+            }
+        });
+    }
+
+    function sendMessage() {
+        const modalElement = $('#chatHistoryModal');
+        const contactId = modalElement.data('contact-id');
+        const messageInput = $('#chatMessageInput');
+        const message = messageInput.val().trim();
+
+        if (!message) {
+            return; // Don't send empty messages
+        }
+
+        $('#sendMessageBtn').prop('disabled', true);
+
+        // --- Backend endpoint to send the message ---
+        // IMPORTANT: You need to create this route and controller method in Laravel.
+        $.ajax({
+            url: '/chat/send', // The new endpoint you need to create
+            type: 'POST',
+            data: {
+                contactId: contactId,
+                message: message,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                // Append the sent message to the chat UI
+                appendMessageToChat(message, true, (Date.now() / 1000));
+                messageInput.val(''); // Clear input
+                $('#chatHistoryBody').scrollTop($('#chatHistoryBody')[0].scrollHeight);
+            },
+            error: function(xhr) {
+                toastr.error(xhr.responseJSON?.message || 'No se pudo enviar el mensaje.', 'Error');
+            },
+            complete: function() {
+                $('#sendMessageBtn').prop('disabled', false);
+            }
+        });
+    }
+
+    function appendMessageToChat(body, fromMe, timestamp) {
+        if (!body) return;
+
+        const modalBody = $('#chatHistoryBody');
+        // If the "no history" message is present, remove it.
+        if (modalBody.find('p.text-center').length > 0) {
+            modalBody.empty();
+        }
+
+        const messageDate = new Date(timestamp * 1000);
+        const formattedTime = messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        const bubbleClass = fromMe ? 'from-me' : 'from-them';
+        const chatMessage = `
+            <div class="chat-bubble ${bubbleClass}">
+                ${body.replace(/\n/g, '<br>')}
+                <span class="chat-timestamp">${formattedTime}</span>
+            </div>
+        `;
+        modalBody.append(chatMessage);
     }
     $("#update_profile").validate({
             rules: {
