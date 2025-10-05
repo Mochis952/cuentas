@@ -63,6 +63,32 @@
     .expand-chevron.rotated {
         transform: rotate(180deg);
     }
+
+    /* Chat bubble styles */
+    .chat-bubble {
+        padding: 10px 15px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        max-width: 75%;
+        position: relative;
+        clear: both;
+        word-wrap: break-word;
+    }
+    .chat-bubble.from-me {
+        background-color: #dcf8c6;
+        float: right;
+    }
+    .chat-bubble.from-them {
+        background-color: #fff;
+        float: left;
+    }
+    .chat-timestamp {
+        font-size: 0.75rem;
+        color: #999;
+        display: block;
+        text-align: right;
+        margin-top: 5px;
+    }
 </style>
 @endpush
 @section('content')
@@ -190,8 +216,82 @@
         </div>
     </div>
 
+    <!-- Update Profile Modal -->
+    <div class="modal fade" id="update_profile_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <form id="update_profile">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Datos del perfil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="profile" class="form-label">Perfil</label>
+                                    <select class="form-select" name="profile" id="profile">
+                                        <option value="-1">Selecciona una opción</option>
+                                        <option value="1">Perfil 1</option>
+                                        <option value="2">Perfil 2</option>
+                                        <option value="3">Perfil 3</option>
+                                        <option value="4">Perfil 4</option>
+                                        <option value="5">Perfil 5</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="pin_profile" class="form-label">Pin del perfil</label>
+                                    <input type="text" class="form-control" id="pin_profile" name="pin_profile">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-none">
+                            <input type="text" id="id_user" name="id_user">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="update_profile_button"type="submit" class="btn btn-primary w-100">Actualizar perfil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat History Modal -->
+    <div class="modal fade" id="chatHistoryModal" tabindex="-1" aria-labelledby="chatHistoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chatHistoryModalLabel">Historial de Conversación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="chatHistoryBody" style="background-color: #e5ddd5; overflow-y: auto; padding-bottom: 20px;">
+                    <!-- Chat messages will be loaded here -->
+                </div>
+                <div class="modal-footer bg-light">
+                    <div class="w-100">
+                        <div id="quickRepliesContainer" class="mb-2">
+                            <!-- Quick replies will be loaded here -->
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="chatMessageInput" class="form-control" placeholder="Escribe un mensaje...">
+                            <button class="btn btn-primary" type="button" id="sendMessageBtn">
+                                <i class="fas fa-paper-plane"></i> Enviar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
+
 @push('scripts')
+<script src="{{ asset('js/jquery.validate.min.js') }}"></script>
 {{-- SweetAlert2 JS --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -241,7 +341,13 @@
                                     <p class="mb-1"><strong>Cliente:</strong> ${element2.customer.name_customer_facebook}</p>
                                     <p class="mb-1"><strong>Contacto:</strong> ${element2.customer.contact_method}</p>
                                     <p class="mb-1"><strong>Próximo Pago:</strong> ${element2.date_expiration}</p>
-                                    <p class="mb-0"><strong>Perfil:</strong> ${element2.profile}</p>
+                                    <p class="mb-1"><strong>Perfil:</strong> ${element2.profile}</p>
+                                    <div class="mt-2 text-end">
+                                        <button class="btn btn-success btn-sm" title="Registrar Pago" onclick="bill_payment(${element2.id}, this)"><i class="fas fa-dollar-sign"></i></button>
+                                        <button class="btn btn-info btn-sm" title="Ver Historial" onclick='viewHistory(event, ${JSON.stringify(element2.customer)})'><i class="fas fa-history"></i></button>
+                                        <button class="btn btn-warning btn-sm" title="Editar Cliente" onclick="edit_customer(${element2.id}, this)"><i class="fas fa-user-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm" title="Eliminar Cliente" onclick="delete_customer(${element2.id}, this)"><i class="fas fa-trash"></i></button>
+                                    </div>
                                 </li>`;
                         });
                         data_customers_html += '</ul>';
@@ -384,4 +490,172 @@
             }
         });
     }
-</script>@endpush
+
+    function bill_payment(customerAccountId, element){
+        event.stopPropagation();
+        if (!confirm('¿Confirmas pago?')) {
+            return;
+        }
+        $(element).prop('disabled', true);
+        $.ajax({
+            url: "/customer_account/update/" + customerAccountId,
+            type: 'POST',
+            success: function(response) {
+                toastr.success("Pago actualizado. Gracias por el pago :)", 'Éxito');
+                setTimeout(() => {
+                    get_data_account_streaming(); // Recargar todo
+                }, 1000);
+            },
+            error: function(xhr, status, error) {
+                $(element).prop('disabled', false);
+                let errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Ocurrió un error.";
+                toastr.error("No se actualizó el pago. " + errorMessage, 'Error');
+            }
+        });
+    }
+
+    function delete_customer(customerAccountId, element){
+        event.stopPropagation();
+        if (!confirm('¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.')) {
+            return;
+        }
+        $(element).prop('disabled', true);
+        $.ajax({
+            url: "/customer_account/delete/"+customerAccountId,
+            type: 'DELETE',
+            success: function(response) {
+                toastr.success("Cliente eliminado.", 'Eliminado');
+                setTimeout(() => {
+                    get_data_account_streaming(); // Recargar todo
+                }, 1000);
+            },
+            error: function(xhr, status, error) {
+                $(element).prop('disabled', false);
+                let errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Ocurrió un error.";
+                toastr.error("Error al eliminar cliente. " + errorMessage, 'Error');
+            }
+        });
+    }
+
+    function edit_customer(customerAccountId, element){
+        event.stopPropagation();
+        reset_modal_update_profile();
+        $('#id_user').val(customerAccountId);
+        $('#update_profile_modal').modal('show');
+    }
+
+    function reset_modal_update_profile(){
+        $('#id_user').val('');
+        $('#profile').val('-1');
+        $('#pin_profile').val('');
+        if ($.fn.validate) {
+            $('#update_profile').validate().resetForm();
+            $('.is-invalid').removeClass('is-invalid');
+        }
+    }
+
+    function viewHistory(event, customer) {
+        event.stopPropagation();
+
+        const contactId = customer.customer_phone_number;
+        if (!contactId) {
+            toastr.error('Este cliente no tiene un número de contacto para ver el historial.', 'Error');
+            return;
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('chatHistoryModal'));
+        const modalBody = $('#chatHistoryBody');
+        
+        $('#chatHistoryModalLabel').text(`Historial de: ${customer.name_customer_facebook || contactId}`);
+        modal.show();
+        modalBody.html('<div class="d-flex justify-content-center p-5"><div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div></div>');
+
+        $.ajax({
+            url: `/chat/history/${contactId}`,
+            type: 'GET',
+            success: function(response) {
+                modalBody.empty();
+                if (response.messages && response.messages.length > 0) {
+                    response.messages.forEach(function(message) {
+                        if (!message.body) return; // Skip empty messages
+
+                        const messageDate = new Date(message.timestamp * 1000);
+                        const formattedTime = messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        
+                        const bubbleClass = message.fromMe ? 'from-me' : 'from-them';
+                        const chatMessage = `
+                            <div class="chat-bubble ${bubbleClass}">
+                                ${message.body}
+                                <span class="chat-timestamp">${formattedTime}</span>
+                            </div>
+                        `;
+                        modalBody.append(chatMessage);
+                    });
+                    modalBody.scrollTop(modalBody[0].scrollHeight);
+                } else {
+                    modalBody.html('<p class="text-center text-muted p-5">No hay mensajes en el historial.</p>');
+                }
+            },
+            error: function(xhr, status, error) {
+                let errorMessage = "No se pudo cargar el historial. Verifique que la ruta y el controlador existan.";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                modalBody.html(`<div class="alert alert-danger m-3">${errorMessage}</div>`);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        if ($.fn.validate) {
+            $("#update_profile").validate({
+                rules: {
+                    profile: {
+                        required: true,
+                        min: 1
+                    },
+                },
+                messages: {
+                    profile: {
+                        required: "Por favor, selecciona un perfil.",
+                        min: "Por favor, selecciona un perfil válido."
+                    },
+                },
+                errorElement: 'div',
+                errorClass: 'invalid-feedback',
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element);
+                },
+                highlight: function (element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form, event) {
+                    event.preventDefault();
+                    $("#update_profile_button").prop("disabled", true);
+                    var formData = $(form).serialize();
+
+                    $.ajax({
+                        url: "/customer_account/update_profile",
+                        type: 'POST',
+                        data: formData,
+                        success: function(response) {
+                            toastr.success("Perfil actualizado correctamente", "Éxito");
+                            $("#update_profile_button").prop("disabled", false);
+                            $('#update_profile_modal').modal('hide');
+                            get_data_account_streaming();
+                        },
+                        error: function(xhr, status, error) {
+                            let errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Ocurrió un error.";
+                            toastr.error("No se actualizó el perfil. " + errorMessage, "Error");
+                            $("#update_profile_button").prop("disabled", false);
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>
+@endpush
