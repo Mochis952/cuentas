@@ -296,20 +296,87 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
-        // Configuración global de AJAX para incluir el token CSRF en todas las peticiones.
+        // 1. Configuración global y listeners
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-        // Inicializar tooltips de Bootstrap
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         });
 
-        // Carga inicial de datos.
+        // 2. Listeners para la funcionalidad de Chat
+        $('#sendMessageBtn').on('click', function() {
+            sendMessage();
+        });
+
+        $('#chatMessageInput').on('keypress', function(e) {
+            if (e.which === 13 && !e.shiftKey) { // Enter key without Shift
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        $('#quickRepliesContainer').on('click', '.quick-reply-btn', function() {
+            const message = $(this).text();
+            $('#chatMessageInput').val(message).focus();
+        });
+
+        // 3. Configuración del plugin de validación
+        if ($.fn.validate) {
+            $("#update_profile").validate({
+                rules: {
+                    profile: {
+                        required: true,
+                        min: 1
+                    },
+                },
+                messages: {
+                    profile: {
+                        required: "Por favor, selecciona un perfil.",
+                        min: "Por favor, selecciona un perfil válido."
+                    },
+                },
+                errorElement: 'div',
+                errorClass: 'invalid-feedback',
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element);
+                },
+                highlight: function (element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form, event) {
+                    event.preventDefault();
+                    $("#update_profile_button").prop("disabled", true);
+                    var formData = $(form).serialize();
+
+                    $.ajax({
+                        url: "/customer_account/update_profile",
+                        type: 'POST',
+                        data: formData,
+                        success: function(response) {
+                            toastr.success("Perfil actualizado correctamente", "Éxito");
+                            $("#update_profile_button").prop("disabled", false);
+                            $('#update_profile_modal').modal('hide');
+                            get_data_account_streaming();
+                        },
+                        error: function(xhr, status, error) {
+                            let errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Ocurrió un error.";
+                            toastr.error("No se actualizó el perfil. " + errorMessage, "Error");
+                            $("#update_profile_button").prop("disabled", false);
+                        }
+                    });
+                }
+            });
+        }
+
+        // 4. Carga inicial de datos
         get_data_account_streaming();
     });
 
@@ -563,12 +630,31 @@
             return;
         }
 
-        const modal = new bootstrap.Modal(document.getElementById('chatHistoryModal'));
+        const modalElement = document.getElementById('chatHistoryModal');
+        const modal = new bootstrap.Modal(modalElement);
         const modalBody = $('#chatHistoryBody');
+
+        // Store contactId in the modal's data attribute to be used by sendMessage
+        $(modalElement).data('contact-id', contactId);
         
         $('#chatHistoryModalLabel').text(`Historial de: ${customer.name_customer_facebook || contactId}`);
         modal.show();
         modalBody.html('<div class="d-flex justify-content-center p-5"><div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div></div>');
+
+        // --- Cargar Respuestas Rápidas ---
+        const quickRepliesContainer = $('#quickRepliesContainer');
+        quickRepliesContainer.empty();
+        const quickReplies = [
+            "¡Hola! Te escribo para recordarte que tu suscripción vence pronto. ¿Deseas renovar?",
+            "Tu servicio ha expirado. Si deseas continuar, por favor realiza tu pago.",
+            "¡Gracias por tu pago! Hemos reactivado tu servicio.",
+            "Recibido. En un momento te confirmo.",
+            "¿Cómo estás? ¿Necesitas ayuda con algo?"
+        ];
+        quickReplies.forEach(reply => {
+            const button = `<button type="button" class="btn btn-outline-secondary btn-sm me-1 mb-1 quick-reply-btn">${reply}</button>`;
+            quickRepliesContainer.append(button);
+        });
 
         $.ajax({
             url: `/chat/history/${contactId}`,
@@ -577,19 +663,7 @@
                 modalBody.empty();
                 if (response.messages && response.messages.length > 0) {
                     response.messages.forEach(function(message) {
-                        if (!message.body) return; // Skip empty messages
-
-                        const messageDate = new Date(message.timestamp * 1000);
-                        const formattedTime = messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        
-                        const bubbleClass = message.fromMe ? 'from-me' : 'from-them';
-                        const chatMessage = `
-                            <div class="chat-bubble ${bubbleClass}">
-                                ${message.body}
-                                <span class="chat-timestamp">${formattedTime}</span>
-                            </div>
-                        `;
-                        modalBody.append(chatMessage);
+                        appendMessageToChat(message.body, message.fromMe, message.timestamp);
                     });
                     modalBody.scrollTop(modalBody[0].scrollHeight);
                 } else {
@@ -606,56 +680,63 @@
         });
     }
 
-    $(document).ready(function() {
-        if ($.fn.validate) {
-            $("#update_profile").validate({
-                rules: {
-                    profile: {
-                        required: true,
-                        min: 1
-                    },
-                },
-                messages: {
-                    profile: {
-                        required: "Por favor, selecciona un perfil.",
-                        min: "Por favor, selecciona un perfil válido."
-                    },
-                },
-                errorElement: 'div',
-                errorClass: 'invalid-feedback',
-                errorPlacement: function (error, element) {
-                    error.insertAfter(element);
-                },
-                highlight: function (element) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element) {
-                    $(element).removeClass('is-invalid');
-                },
-                submitHandler: function(form, event) {
-                    event.preventDefault();
-                    $("#update_profile_button").prop("disabled", true);
-                    var formData = $(form).serialize();
+    function sendMessage() {
+        const modalElement = $('#chatHistoryModal');
+        const contactId = modalElement.data('contact-id');
+        const messageInput = $('#chatMessageInput');
+        const message = messageInput.val().trim();
 
-                    $.ajax({
-                        url: "/customer_account/update_profile",
-                        type: 'POST',
-                        data: formData,
-                        success: function(response) {
-                            toastr.success("Perfil actualizado correctamente", "Éxito");
-                            $("#update_profile_button").prop("disabled", false);
-                            $('#update_profile_modal').modal('hide');
-                            get_data_account_streaming();
-                        },
-                        error: function(xhr, status, error) {
-                            let errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Ocurrió un error.";
-                            toastr.error("No se actualizó el perfil. " + errorMessage, "Error");
-                            $("#update_profile_button").prop("disabled", false);
-                        }
-                    });
-                }
-            });
+        if (!message) {
+            return; // Don't send empty messages
         }
-    });
+
+        $('#sendMessageBtn').prop('disabled', true);
+
+        // --- Backend endpoint to send the message ---
+        // IMPORTANT: You need to create this route and controller method in Laravel.
+        $.ajax({
+            url: '/chat/send', // The new endpoint you need to create
+            type: 'POST',
+            data: {
+                contactId: contactId,
+                message: message,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                // Append the sent message to the chat UI
+                appendMessageToChat(message, true, (Date.now() / 1000));
+                messageInput.val(''); // Clear input
+                $('#chatHistoryBody').scrollTop($('#chatHistoryBody')[0].scrollHeight);
+            },
+            error: function(xhr) {
+                toastr.error(xhr.responseJSON?.message || 'No se pudo enviar el mensaje.', 'Error');
+            },
+            complete: function() {
+                $('#sendMessageBtn').prop('disabled', false);
+            }
+        });
+    }
+
+    function appendMessageToChat(body, fromMe, timestamp) {
+        if (!body) return;
+
+        const modalBody = $('#chatHistoryBody');
+        // If the "no history" message is present, remove it.
+        if (modalBody.find('p.text-center').length > 0) {
+            modalBody.empty();
+        }
+
+        const messageDate = new Date(timestamp * 1000);
+        const formattedTime = messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        const bubbleClass = fromMe ? 'from-me' : 'from-them';
+        const chatMessage = `
+            <div class="chat-bubble ${bubbleClass}">
+                ${body.replace(/\n/g, '<br>')}
+                <span class="chat-timestamp">${formattedTime}</span>
+            </div>
+        `;
+        modalBody.append(chatMessage);
+    }
 </script>
 @endpush

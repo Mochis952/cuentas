@@ -42,6 +42,7 @@ Route::delete('/customer_account/delete/{id}', 'App\Http\Controllers\CustomerAcc
 Route::get('/account_streaming/available/{name_service}', 'App\Http\Controllers\AccountStreamingController@get_account_streaming_available')->name('account_streaming_available');
 Route::post('/customer_account/update_profile', 'App\Http\Controllers\CustomerAccountController@update_profile')->name('update_profile_customer_account');
 Route::get('chat/history/{customer_contact}', 'App\Http\Controllers\CustomerController@history_customer')->name('chat_history');
+Route::post('chat/send/', 'App\Http\Controllers\CustomerController@send_message_customer')->name('chat_history');
 // Rutas para actualizar y eliminar cuentas de streaming
 Route::post('/account-streaming/update/{id}', 'App\Http\Controllers\AccountStreamingController@update')->name('update_account_streaming');
 Route::delete('/account-streaming/delete/{id}', 'App\Http\Controllers\AccountStreamingController@destroy')->name('delete_account_streaming');
